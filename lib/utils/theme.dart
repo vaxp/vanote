@@ -6,13 +6,14 @@ class AppTheme {
     useMaterial3: true,
     brightness: Brightness.dark,
     colorScheme: ColorScheme.dark(
-      primary: Colors.blue[400]!,
-      secondary: Colors.tealAccent[400]!,
-      surface: Colors.white.withOpacity(0.1),
-      background: const Color.fromARGB(255, 36, 36, 36),
-      error: Colors.red[400]!,
+      primary: const Color.fromARGB(255, 0, 225, 255), // Bright cyan
+      secondary: const Color.fromARGB(255, 0, 255, 195), // Bright teal
+      surface: Colors.white.withOpacity(0.08),
+      background: const Color(0xFF1A1B1E), // Deep dark background
+      error: const Color(0xFFFF5252),
+      tertiary: const Color(0xFF4CAF50), // Neon green for accents
     ),
-    scaffoldBackgroundColor: const Color.fromARGB(255, 36, 36, 36),
+    scaffoldBackgroundColor: const Color(0xFF1A1B1E),
     appBarTheme: AppBarTheme(
       backgroundColor: const Color.fromARGB(255, 36, 36, 36),
       elevation: 0,
@@ -23,12 +24,12 @@ class AppTheme {
       ),
     ),
     cardTheme: CardTheme(
-      color: Colors.white.withOpacity(0.1),
+      color: Colors.white.withOpacity(0.07),
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
         side: BorderSide(
-          color: Colors.white.withOpacity(0.1),
+          color: Colors.white.withOpacity(0.12),
           width: 1,
         ),
       ),

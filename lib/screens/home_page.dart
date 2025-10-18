@@ -20,81 +20,127 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Row(
-        children: [
-          _buildSidebar(context),
-          Expanded(
-            child: Column(
-              children: [
-                _buildAppBar(context),
-                Expanded(
-                  child: Consumer<TaskProvider>(
-                    builder: (context, taskProvider, child) {
-                      final tasks =
-                          _selectedCategory == 'All'
-                              ? taskProvider.tasks
-                              : taskProvider.getTasksByCategory(
-                                _selectedCategory,
-                              );
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              const Color.fromARGB(255, 0, 0, 0).withOpacity(0.95),
+              const Color.fromARGB(255, 0, 0, 0).withOpacity(0.95),
 
-                      if (tasks.isEmpty) {
-                        return Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.task_alt,
-                                size: 64,
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.primary.withOpacity(0.5),
-                              ),
-                              const SizedBox(height: 16),
-                              Text(
-                                'No tasks yet',
-                                style: Theme.of(
-                                  context,
-                                ).textTheme.titleLarge?.copyWith(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onSurface.withOpacity(0.7),
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'Click the + button to add a new task',
-                                style: Theme.of(
-                                  context,
-                                ).textTheme.bodyMedium?.copyWith(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onSurface.withOpacity(0.5),
-                                ),
-                              ),
-                            ],
+            ],
+          ),
+        ),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+          child: Row(
+            children: [
+              _buildSidebar(context),
+              Expanded(
+                child: ClipRRect(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.02),
+                        border: Border(
+                          left: BorderSide(
+                            color: Colors.white.withOpacity(0.06),
+                            width: 1,
                           ),
-                        );
-                      }
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          _buildAppBar(context),
+                          Expanded(
+                            child: Consumer<TaskProvider>(
+                              builder: (context, taskProvider, child) {
+                                final tasks =
+                                    _selectedCategory == 'All'
+                                        ? taskProvider.tasks
+                                        : taskProvider.getTasksByCategory(
+                                          _selectedCategory,
+                                        );
 
-                      return ListView.builder(
-                        padding: const EdgeInsets.all(16),
-                        itemCount: tasks.length,
-                        itemBuilder: (context, index) {
-                          final task = tasks[index];
-                          return TaskListItem(
-                            task: task,
-                            onTap: () => _openTaskDetails(context, task),
-                            onLongPress: () => _showTaskOptions(context, task),
-                          );
-                        },
-                      );
-                    },
+                                if (tasks.isEmpty) {
+                                  return Center(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.task_alt,
+                                          size: 64,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary
+                                              .withOpacity(0.5),
+                                        ),
+                                        const SizedBox(height: 16),
+                                        Text(
+                                          'No tasks yet',
+                                          style: Theme.of(
+                                            context,
+                                          ).textTheme.titleLarge?.copyWith(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurface
+                                                .withOpacity(0.7),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          'Click the + button to add a new task',
+                                          style: Theme.of(
+                                            context,
+                                          ).textTheme.bodyMedium?.copyWith(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurface
+                                                .withOpacity(0.5),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }
+
+                                return GridView.builder(
+                                  padding: const EdgeInsets.all(16),
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 3,
+                                        childAspectRatio: 1.2,
+                                        crossAxisSpacing: 10,
+                                        mainAxisSpacing: 10,
+                                      ),
+                                  itemCount: tasks.length,
+                                  itemBuilder: (context, index) {
+                                    final task = tasks[index];
+                                    return TaskListItem(
+                                      task: task,
+                                      onTap:
+                                          () => _openTaskDetails(context, task),
+                                      onLongPress:
+                                          () => _showTaskOptions(context, task),
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -106,12 +152,17 @@ class _HomePageState extends State<HomePage> {
 
     return ClipRRect(
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
         child: Container(
-          width: 250,
+          width: 280,
           decoration: BoxDecoration(
-            color: const Color.fromARGB(43, 2, 2, 2),
-            border: Border(),
+            color: Colors.white.withOpacity(0.03),
+            border: Border(
+              right: BorderSide(
+                color: Colors.white.withOpacity(0.06),
+                width: 1,
+              ),
+            ),
           ),
           child: Column(
             children: [
@@ -336,22 +387,37 @@ class _CategoryListItemState extends State<_CategoryListItem> {
       onExit: (_) => setState(() => _isHovered = false),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(12),
           color:
               widget.isSelected
                   ? theme.colorScheme.primary.withOpacity(0.15)
                   : _isHovered
-                  ? theme.colorScheme.primary.withOpacity(0.05)
+                  ? Colors.white.withOpacity(0.05)
                   : Colors.transparent,
           border: Border.all(
             color:
-                (widget.isSelected || _isHovered)
-                    ? theme.colorScheme.primary.withOpacity(0.18)
+                widget.isSelected
+                    ? theme.colorScheme.primary.withOpacity(0.3)
+                    : _isHovered
+                    ? Colors.white.withOpacity(0.1)
                     : Colors.transparent,
             width: 1,
           ),
+          boxShadow:
+              widget.isSelected || _isHovered
+                  ? [
+                    BoxShadow(
+                      color:
+                          widget.isSelected
+                              ? theme.colorScheme.primary.withOpacity(0.2)
+                              : Colors.white.withOpacity(0.03),
+                      blurRadius: 8,
+                      spreadRadius: 0,
+                    ),
+                  ]
+                  : null,
         ),
         child: ListTile(
           dense: true,

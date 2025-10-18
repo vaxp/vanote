@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'dart:ui';
 import '../models/task.dart';
 
-class TaskListItem extends StatelessWidget {
+class TaskListItem extends StatefulWidget {
   final Task task;
   final VoidCallback onTap;
   final VoidCallback onLongPress;
@@ -14,58 +15,134 @@ class TaskListItem extends StatelessWidget {
   });
 
   @override
+  State<TaskListItem> createState() => _TaskListItemState();
+}
+
+class _TaskListItemState extends State<TaskListItem> {
+  bool _isHovered = false;
+
+  @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 16),
-      child: InkWell(
-        onTap: onTap,
-        onLongPress: onLongPress,
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          child: Column(
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(24),
+          color: _isHovered
+              ? Theme.of(context).colorScheme.surface.withOpacity(0.15)
+              : Theme.of(context).colorScheme.surface.withOpacity(0.08),
+          border: Border.all(
+            color: _isHovered
+                ? Theme.of(context).colorScheme.primary.withOpacity(0.3)
+                : Colors.white.withOpacity(0.06),
+            width: 1,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: _isHovered
+                  ? Theme.of(context).colorScheme.primary.withOpacity(0.2)
+                  : Colors.black.withOpacity(0.3),
+              blurRadius: 20,
+              spreadRadius: _isHovered ? 4 : -2,
+            ),
+            if (_isHovered)
+              BoxShadow(
+                color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                blurRadius: 30,
+                spreadRadius: 10,
+              ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: widget.onTap,
+                onLongPress: widget.onLongPress,
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      task.title,
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            decoration: task.status == TaskStatus.completed
-                                ? TextDecoration.lineThrough
-                                : null,
-                          ),
-                    ),
-                  ),
-                  _buildStatusIndicator(context),
-                ],
-              ),
-              const SizedBox(height: 8),
+              _buildStatusIndicator(context),
+              const SizedBox(height: 12),
               Text(
-                task.description,
+                widget.task.title,
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      decoration: widget.task.status == TaskStatus.completed
+                          ? TextDecoration.lineThrough
+                          : null,
+                      fontSize: 20,
+                      height: 1.2,
+                    ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.bodyMedium,
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 12),
+              Expanded(
+                child: Text(
+                  widget.task.description,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    height: 1.5,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Chip(
-                    label: Text(task.category),
-                    backgroundColor: Theme.of(context).colorScheme.surface,
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+                        width: 1,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                          blurRadius: 8,
+                          spreadRadius: 0,
+                        ),
+                      ],
+                    ),
+                    child: Text(
+                      widget.task.category,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                   ),
-                  Text(
-                    _getFormattedDate(),
-                    style: Theme.of(context).textTheme.bodySmall,
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.05),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      _getFormattedDate(),
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Colors.white.withOpacity(0.7),
+                      ),
+                    ),
                   ),
                 ],
               ),
             ],
           ),
         ),
-      ),
+      ),),),),),
     );
   }
 
@@ -74,21 +151,33 @@ class TaskListItem extends StatelessWidget {
     final icon = _getStatusIcon();
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: color.withOpacity(0.2),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: color.withOpacity(0.1),
+            blurRadius: 8,
+            spreadRadius: 0,
+          ),
+        ],
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 16, color: color),
-          const SizedBox(width: 4),
+          const SizedBox(width: 6),
           Text(
             _getStatusText(),
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: color,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.3,
                 ),
           ),
         ],
@@ -97,18 +186,18 @@ class TaskListItem extends StatelessWidget {
   }
 
   Color _getStatusColor(BuildContext context) {
-    switch (task.status) {
+    switch (widget.task.status) {
       case TaskStatus.completed:
-        return Colors.green;
+        return const Color(0xFF4CAF50);
       case TaskStatus.inProgress:
-        return Colors.orange;
+        return const Color(0xFFFF9800);
       case TaskStatus.notStarted:
         return Colors.grey;
     }
   }
 
   IconData _getStatusIcon() {
-    switch (task.status) {
+    switch (widget.task.status) {
       case TaskStatus.completed:
         return Icons.check_circle;
       case TaskStatus.inProgress:
@@ -119,7 +208,7 @@ class TaskListItem extends StatelessWidget {
   }
 
   String _getStatusText() {
-    switch (task.status) {
+    switch (widget.task.status) {
       case TaskStatus.completed:
         return 'Done';
       case TaskStatus.inProgress:
@@ -131,7 +220,7 @@ class TaskListItem extends StatelessWidget {
 
   String _getFormattedDate() {
     final now = DateTime.now();
-    final difference = now.difference(task.createdAt);
+    final difference = now.difference(widget.task.createdAt);
 
     if (difference.inDays == 0) {
       return 'Today';
