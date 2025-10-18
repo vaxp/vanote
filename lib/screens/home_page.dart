@@ -23,7 +23,6 @@ class _HomePageState extends State<HomePage> {
       body: Row(
         children: [
           _buildSidebar(context),
-          const VerticalDivider(width: 1),
           Expanded(
             child: Column(
               children: [
@@ -31,9 +30,12 @@ class _HomePageState extends State<HomePage> {
                 Expanded(
                   child: Consumer<TaskProvider>(
                     builder: (context, taskProvider, child) {
-                      final tasks = _selectedCategory == 'All'
-                          ? taskProvider.tasks
-                          : taskProvider.getTasksByCategory(_selectedCategory);
+                      final tasks =
+                          _selectedCategory == 'All'
+                              ? taskProvider.tasks
+                              : taskProvider.getTasksByCategory(
+                                _selectedCategory,
+                              );
 
                       if (tasks.isEmpty) {
                         return Center(
@@ -43,21 +45,31 @@ class _HomePageState extends State<HomePage> {
                               Icon(
                                 Icons.task_alt,
                                 size: 64,
-                                color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.primary.withOpacity(0.5),
                               ),
                               const SizedBox(height: 16),
                               Text(
                                 'No tasks yet',
-                                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                                    ),
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.titleLarge?.copyWith(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurface.withOpacity(0.7),
+                                ),
                               ),
                               const SizedBox(height: 8),
                               Text(
                                 'Click the + button to add a new task',
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
-                                    ),
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.bodyMedium?.copyWith(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurface.withOpacity(0.5),
+                                ),
                               ),
                             ],
                           ),
@@ -98,12 +110,9 @@ class _HomePageState extends State<HomePage> {
         child: Container(
           width: 250,
           decoration: BoxDecoration(
-            color: theme.colorScheme.surface,
+            color: const Color.fromARGB(43, 2, 2, 2),
             border: Border(
-              right: BorderSide(
-                color: Colors.white.withOpacity(0.06),
-                width: 1,
-              ),
+
             ),
           ),
           child: Column(
@@ -127,7 +136,6 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-              const Divider(height: 1),
               Expanded(
                 child: ListView.builder(
                   itemCount: categories.length,
@@ -156,14 +164,17 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildAppBar(BuildContext context) {
     final theme = Theme.of(context);
+    
     return ClipRRect(
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+
         child: Container(
+          
           height: 60,
           padding: const EdgeInsets.symmetric(horizontal: 16),
           decoration: BoxDecoration(
-            color: theme.colorScheme.surface,
+            //theme.colorScheme.surface,
             border: Border(
               bottom: BorderSide(
                 color: Colors.white.withOpacity(0.06),
@@ -180,13 +191,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               const Spacer(),
-              IconButton(
-                icon: const Icon(Icons.sort),
-                onPressed: () {
-                  // TODO: Implement sorting
-                },
-                tooltip: 'Sort Tasks',
-              ),
+              
             ],
           ),
         ),
@@ -197,18 +202,14 @@ class _HomePageState extends State<HomePage> {
   void _addNewTask(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => const AddTaskScreen(),
-      ),
+      MaterialPageRoute(builder: (context) => const AddTaskScreen()),
     );
   }
 
   void _openTaskDetails(BuildContext context, Task task) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => TaskDetailScreen(task: task),
-      ),
+      MaterialPageRoute(builder: (context) => TaskDetailScreen(task: task)),
     );
   }
 
@@ -217,71 +218,78 @@ class _HomePageState extends State<HomePage> {
 
     showModalBottomSheet(
       context: context,
-      builder: (context) => BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 20),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
-            borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(16),
-            ),
-            border: Border(
-              top: BorderSide(
-                color: Colors.white.withOpacity(0.06),
-                width: 1,
+      builder:
+          (context) => BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(16),
+                ),
+                border: Border(
+                  top: BorderSide(
+                    color: Colors.white.withOpacity(0.06),
+                    width: 1,
+                  ),
+                ),
               ),
-            ),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildOptionTile(
-                context,
-                icon: Icons.check_circle_outline,
-                title: 'Mark as Completed',
-                onTap: () {
-                  taskProvider.updateTaskStatus(task.id, TaskStatus.completed);
-                  Navigator.pop(context);
-                },
-              ),
-              _buildOptionTile(
-                context,
-                icon: Icons.pending_actions,
-                title: 'Mark as In Progress',
-                onTap: () {
-                  taskProvider.updateTaskStatus(task.id, TaskStatus.inProgress);
-                  Navigator.pop(context);
-                },
-              ),
-              _buildOptionTile(
-                context,
-                icon: Icons.edit,
-                title: 'Edit Task',
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildOptionTile(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => AddTaskScreen(task: task),
-                    ),
-                  );
-                },
+                    icon: Icons.check_circle_outline,
+                    title: 'Mark as Completed',
+                    onTap: () {
+                      taskProvider.updateTaskStatus(
+                        task.id,
+                        TaskStatus.completed,
+                      );
+                      Navigator.pop(context);
+                    },
+                  ),
+                  _buildOptionTile(
+                    context,
+                    icon: Icons.pending_actions,
+                    title: 'Mark as In Progress',
+                    onTap: () {
+                      taskProvider.updateTaskStatus(
+                        task.id,
+                        TaskStatus.inProgress,
+                      );
+                      Navigator.pop(context);
+                    },
+                  ),
+                  _buildOptionTile(
+                    context,
+                    icon: Icons.edit,
+                    title: 'Edit Task',
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AddTaskScreen(task: task),
+                        ),
+                      );
+                    },
+                  ),
+                  _buildOptionTile(
+                    context,
+                    icon: Icons.delete,
+                    title: 'Delete Task',
+                    isDestructive: true,
+                    onTap: () {
+                      taskProvider.deleteTask(task.id);
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
               ),
-              _buildOptionTile(
-                context,
-                icon: Icons.delete,
-                title: 'Delete Task',
-                isDestructive: true,
-                onTap: () {
-                  taskProvider.deleteTask(task.id);
-                  Navigator.pop(context);
-                },
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
     );
   }
 
@@ -293,15 +301,10 @@ class _HomePageState extends State<HomePage> {
     bool isDestructive = false,
   }) {
     return ListTile(
-      leading: Icon(
-        icon,
-        color: isDestructive ? Colors.red : null,
-      ),
+      leading: Icon(icon, color: isDestructive ? Colors.red : null),
       title: Text(
         title,
-        style: TextStyle(
-          color: isDestructive ? Colors.red : null,
-        ),
+        style: TextStyle(color: isDestructive ? Colors.red : null),
       ),
       onTap: onTap,
     );
@@ -337,21 +340,20 @@ class _CategoryListItemState extends State<_CategoryListItem> {
       onExit: (_) => setState(() => _isHovered = false),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        margin: const EdgeInsets.symmetric(
-          horizontal: 8,
-          vertical: 4,
-        ),
+        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          color: widget.isSelected
-              ? theme.colorScheme.primary.withOpacity(0.15)
-              : _isHovered
+          color:
+              widget.isSelected
+                  ? theme.colorScheme.primary.withOpacity(0.15)
+                  : _isHovered
                   ? theme.colorScheme.primary.withOpacity(0.05)
                   : Colors.transparent,
           border: Border.all(
-            color: (widget.isSelected || _isHovered)
-                ? theme.colorScheme.primary.withOpacity(0.18)
-                : Colors.transparent,
+            color:
+                (widget.isSelected || _isHovered)
+                    ? theme.colorScheme.primary.withOpacity(0.18)
+                    : Colors.transparent,
             width: 1,
           ),
         ),
@@ -361,17 +363,19 @@ class _CategoryListItemState extends State<_CategoryListItem> {
             duration: const Duration(milliseconds: 200),
             child: Icon(
               widget.index == 0 ? Icons.inbox : Icons.folder_outlined,
-              color: widget.isSelected || _isHovered
-                  ? theme.colorScheme.primary
-                  : theme.colorScheme.onSurface.withOpacity(0.7),
+              color:
+                  widget.isSelected || _isHovered
+                      ? theme.colorScheme.primary
+                      : theme.colorScheme.onSurface.withOpacity(0.7),
             ),
           ),
           title: Text(
             widget.category,
             style: theme.textTheme.bodyLarge?.copyWith(
-              color: widget.isSelected || _isHovered
-                  ? theme.colorScheme.primary
-                  : theme.colorScheme.onSurface,
+              color:
+                  widget.isSelected || _isHovered
+                      ? theme.colorScheme.primary
+                      : theme.colorScheme.onSurface,
               fontWeight: widget.isSelected ? FontWeight.w600 : null,
             ),
           ),

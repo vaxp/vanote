@@ -9,12 +9,12 @@ class AppTheme {
       primary: Colors.blue[400]!,
       secondary: Colors.tealAccent[400]!,
       surface: Colors.white.withOpacity(0.1),
-      background: const Color(0xFF121212),
+      background: const Color.fromARGB(255, 36, 36, 36),
       error: Colors.red[400]!,
     ),
-    scaffoldBackgroundColor: const Color(0xFF0A0A0A),
+    scaffoldBackgroundColor: const Color.fromARGB(255, 36, 36, 36),
     appBarTheme: AppBarTheme(
-      backgroundColor: const Color.fromARGB(255, 0, 0, 0),
+      backgroundColor: const Color.fromARGB(255, 36, 36, 36),
       elevation: 0,
       titleTextStyle: GoogleFonts.poppins(
         color: Colors.white,
@@ -54,7 +54,7 @@ class AppTheme {
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: const Color(0xFF2C2C2C),
+      fillColor: const Color.fromARGB(255, 26, 26, 26),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
         borderSide: BorderSide.none,
