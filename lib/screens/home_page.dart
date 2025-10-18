@@ -111,9 +111,7 @@ class _HomePageState extends State<HomePage> {
           width: 250,
           decoration: BoxDecoration(
             color: const Color.fromARGB(43, 2, 2, 2),
-            border: Border(
-
-            ),
+            border: Border(),
           ),
           child: Column(
             children: [
@@ -164,13 +162,12 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildAppBar(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return ClipRRect(
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
 
         child: Container(
-          
           height: 60,
           padding: const EdgeInsets.symmetric(horizontal: 16),
           decoration: BoxDecoration(
@@ -191,7 +188,6 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               const Spacer(),
-              
             ],
           ),
         ),

@@ -1,18 +1,33 @@
+import 'package:hive/hive.dart';
 import 'package:uuid/uuid.dart';
 
+part 'task.g.dart';
+
+@HiveType(typeId: 0)
 enum TaskStatus {
+  @HiveField(0)
   notStarted,
+  @HiveField(1)
   inProgress,
+  @HiveField(2)
   completed,
 }
 
-class Task {
+@HiveType(typeId: 1)
+class Task extends HiveObject {
+  @HiveField(0)
   final String id;
+  @HiveField(1)
   String title;
+  @HiveField(2)
   String description;
+  @HiveField(3)
   String category;
+  @HiveField(4)
   TaskStatus status;
+  @HiveField(5)
   DateTime createdAt;
+  @HiveField(6)
   DateTime? updatedAt;
 
   Task({
