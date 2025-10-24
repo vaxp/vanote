@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:ui';
+// import 'dart:ui';
 import '../models/task.dart';
 
 class TaskListItem extends StatefulWidget {
@@ -57,8 +57,7 @@ class _TaskListItemState extends State<TaskListItem> {
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(16),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+        
             child: Material(
               color: Colors.transparent,
               child: InkWell(
@@ -142,7 +141,7 @@ class _TaskListItemState extends State<TaskListItem> {
             ],
           ),
         ),
-      ),),),),),
+      ),),),)
     );
   }
 

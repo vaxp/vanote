@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:ui';
+// import 'dart:ui';
 import 'package:provider/provider.dart';
 import '../models/task.dart';
 import '../providers/task_provider.dart';
@@ -23,113 +23,101 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: const Color.fromARGB(176, 0, 0, 0),
       body: Container(
         decoration: BoxDecoration(),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-          child: Row(
-            children: [
-              _buildSidebar(context),
-              Expanded(
-                child: ClipRRect(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.02),
-                        border: Border(
-                          left: BorderSide(
-                            color: Colors.white.withOpacity(0.06),
-                            width: 1,
-                          ),
-                        ),
-                      ),
-                      child: Column(
-                        children: [
-                          _buildAppBar(context),
-                          Expanded(
-                            child: Consumer<TaskProvider>(
-                              builder: (context, taskProvider, child) {
-                                final tasks =
-                                    _selectedCategory == 'All'
-                                        ? taskProvider.tasks
-                                        : taskProvider.getTasksByCategory(
-                                          _selectedCategory,
-                                        );
 
-                                if (tasks.isEmpty) {
-                                  return Center(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          Icons.task_alt,
-                                          size: 64,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary
-                                              .withOpacity(0.5),
-                                        ),
-                                        const SizedBox(height: 16),
-                                        Text(
-                                          'No tasks yet',
-                                          style: Theme.of(
-                                            context,
-                                          ).textTheme.titleLarge?.copyWith(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .onSurface
-                                                .withOpacity(0.7),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 8),
-                                        Text(
-                                          'Click the + button to add a new task',
-                                          style: Theme.of(
-                                            context,
-                                          ).textTheme.bodyMedium?.copyWith(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .onSurface
-                                                .withOpacity(0.5),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                }
-
-                                return GridView.builder(
-                                  padding: const EdgeInsets.all(16),
-                                  gridDelegate:
-                                      const SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 3,
-                                        childAspectRatio: 1.2,
-                                        crossAxisSpacing: 10,
-                                        mainAxisSpacing: 10,
-                                      ),
-                                  itemCount: tasks.length,
-                                  itemBuilder: (context, index) {
-                                    final task = tasks[index];
-                                    return TaskListItem(
-                                      task: task,
-                                      onTap:
-                                          () => _openTaskDetails(context, task),
-                                      onLongPress:
-                                          () => _showTaskOptions(context, task),
-                                    );
-                                  },
-                                );
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
+        child: Row(
+          children: [
+            _buildSidebar(context),
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(176, 0, 0, 0),
+                  border: Border(
+                    left: BorderSide(
+                      color: const Color.fromARGB(176, 0, 0, 0),
+                      width: 1,
                     ),
                   ),
                 ),
+                child: Column(
+                  children: [
+                    _buildAppBar(context),
+                    Expanded(
+                      child: Consumer<TaskProvider>(
+                        builder: (context, taskProvider, child) {
+                          final tasks =
+                              _selectedCategory == 'All'
+                                  ? taskProvider.tasks
+                                  : taskProvider.getTasksByCategory(
+                                    _selectedCategory,
+                                  );
+
+                          if (tasks.isEmpty) {
+                            return Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.task_alt,
+                                    size: 64,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary.withOpacity(0.5),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    'No tasks yet',
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.titleLarge?.copyWith(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onSurface.withOpacity(0.7),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    'Click the + button to add a new task',
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodyMedium?.copyWith(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onSurface.withOpacity(0.5),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+
+                          return GridView.builder(
+                            padding: const EdgeInsets.all(16),
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3,
+                                  childAspectRatio: 1.2,
+                                  crossAxisSpacing: 10,
+                                  mainAxisSpacing: 10,
+                                ),
+                            itemCount: tasks.length,
+                            itemBuilder: (context, index) {
+                              final task = tasks[index];
+                              return TaskListItem(
+                                task: task,
+                                onTap: () => _openTaskDetails(context, task),
+                                onLongPress:
+                                    () => _showTaskOptions(context, task),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -141,61 +129,55 @@ class _HomePageState extends State<HomePage> {
     final theme = Theme.of(context);
 
     return ClipRRect(
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-        child: Container(
-          width: 280,
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.03),
-            border: Border(
-              right: BorderSide(
-                color: Colors.white.withOpacity(0.06),
-                width: 1,
+      child: Container(
+        width: 280,
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(176, 0, 0, 0),
+          border: Border(
+            right: BorderSide(color: const Color.fromARGB(176, 0, 0, 0), width: 1),
+          ),
+        ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Text(
+                    'Tasks',
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    icon: const Icon(Icons.add),
+                    onPressed: () => _addNewTask(context),
+                    tooltip: 'Add Task',
+                  ),
+                ],
               ),
             ),
-          ),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  children: [
-                    Text(
-                      'Tasks',
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const Spacer(),
-                    IconButton(
-                      icon: const Icon(Icons.add),
-                      onPressed: () => _addNewTask(context),
-                      tooltip: 'Add Task',
-                    ),
-                  ],
-                ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: categories.length,
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                itemBuilder: (context, index) {
+                  final category = categories[index];
+                  return _CategoryListItem(
+                    category: category,
+                    index: index,
+                    isSelected: _selectedCategory == category,
+                    onTap: () {
+                      setState(() {
+                        _selectedCategory = category;
+                      });
+                    },
+                  );
+                },
               ),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: categories.length,
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  itemBuilder: (context, index) {
-                    final category = categories[index];
-                    return _CategoryListItem(
-                      category: category,
-                      index: index,
-                      isSelected: _selectedCategory == category,
-                      onTap: () {
-                        setState(() {
-                          _selectedCategory = category;
-                        });
-                      },
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -205,32 +187,25 @@ class _HomePageState extends State<HomePage> {
     final theme = Theme.of(context);
 
     return ClipRRect(
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-
-        child: Container(
-          height: 60,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          decoration: BoxDecoration(
-            //theme.colorScheme.surface,
-            border: Border(
-              bottom: BorderSide(
-                color: Colors.white.withOpacity(0.06),
-                width: 1,
+      child: Container(
+        height: 60,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        decoration: BoxDecoration(
+          //theme.colorScheme.surface,
+          border: Border(
+            bottom: BorderSide(color: Colors.white.withOpacity(0.06), width: 1),
+          ),
+        ),
+        child: Row(
+          children: [
+            Text(
+              _selectedCategory,
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
               ),
             ),
-          ),
-          child: Row(
-            children: [
-              Text(
-                _selectedCategory,
-                style: theme.textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const Spacer(),
-            ],
-          ),
+            const Spacer(),
+          ],
         ),
       ),
     );
@@ -256,8 +231,7 @@ class _HomePageState extends State<HomePage> {
     showModalBottomSheet(
       context: context,
       builder:
-          (context) => BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+          (context) => ClipRRect(
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 20),
               decoration: BoxDecoration(
