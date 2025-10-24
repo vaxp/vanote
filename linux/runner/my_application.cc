@@ -20,16 +20,10 @@ static void my_application_activate(GApplication* application) {
   GtkWindow* window =
       GTK_WINDOW(gtk_application_window_new(GTK_APPLICATION(application)));
 
-  // Use a header bar when running in GNOME as this is the common style used
-  // by applications and is the setup most users will be using (e.g. Ubuntu
-  // desktop).
-  // If running on X and not using GNOME then just use a traditional title bar
-  // in case the window manager does more exotic layout, e.g. tiling.
-  // If running on Wayland assume the header bar will work (may need changing
-  // if future cases occur).
+  // --- كود الـ HeaderBar (يبقى كما هو) ---
   gboolean use_header_bar = TRUE;
 #ifdef GDK_WINDOWING_X11
-  GdkScreen* screen = gtk_window_get_screen(window);
+  GdkScreen* screen = gtk_window_get_screen(window); // <-- تعريف "screen" هنا
   if (GDK_IS_X11_SCREEN(screen)) {
     const gchar* wm_name = gdk_x11_screen_get_window_manager_name(screen);
     if (g_strcmp0(wm_name, "GNOME Shell") != 0) {
@@ -40,14 +34,32 @@ static void my_application_activate(GApplication* application) {
   if (use_header_bar) {
     GtkHeaderBar* header_bar = GTK_HEADER_BAR(gtk_header_bar_new());
     gtk_widget_show(GTK_WIDGET(header_bar));
-    gtk_header_bar_set_title(header_bar, "vanote");
+    gtk_header_bar_set_title(header_bar, "flutter_application_1");
     gtk_header_bar_set_show_close_button(header_bar, TRUE);
     gtk_window_set_titlebar(window, GTK_WIDGET(header_bar));
   } else {
-    gtk_window_set_title(window, "vanote");
+    gtk_window_set_title(window, "flutter_application_1");
   }
+  // --- نهاية كود HeaderBar ---
 
   gtk_window_set_default_size(window, 1280, 720);
+
+  // --- VAXP BLUR CONFIGURATION START ---
+
+  // الخطوة 1: إخبار GTK أننا سنرسم خلفيتنا بأنفسنا
+  gtk_widget_set_app_paintable(GTK_WIDGET(window), TRUE);
+
+  // (نحتاج لتعريف "screen" إذا لم يكن X11 مفعلاً)
+  #ifndef GDK_WINDOWING_X11
+  GdkScreen* screen = gtk_window_get_screen(window);
+  #endif
+
+  // الخطوة 2: تمكين قناة RGBA (الشفافية)
+  GdkVisual* visual = gdk_screen_get_rgba_visual(screen);
+  if (visual != nullptr && gdk_screen_is_composited(screen)) {
+    gtk_widget_set_visual(GTK_WIDGET(window), visual);
+  }
+
   gtk_widget_show(GTK_WIDGET(window));
 
   g_autoptr(FlDartProject) project = fl_dart_project_new();
@@ -56,6 +68,26 @@ static void my_application_activate(GApplication* application) {
   FlView* view = fl_view_new(project);
   gtk_widget_show(GTK_WIDGET(view));
   gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET(view));
+
+  // الخطوة 3: (هذه هي الخطوة الحاسمة المفقودة)
+  // إجبار خلفية النافذة وخلفية Flutter (view) لتكون شفافة بالكامل
+  GtkCssProvider* provider = gtk_css_provider_new();
+gtk_css_provider_load_from_data(provider,
+                                    // 1. اجعل النافذة وحاوية Flutter شفافة بالكامل
+                                    "window, window > box, window > box > view {"
+                                    "  background-color: transparent;"
+                                    "}"
+                                    // 2. أعط الشريط العلوي نفس لون "الزجاج الأسود"
+                                    "headerbar {"
+                                    "  background-color: rgba(0, 0, 0, 0.69);"
+                                    "}",
+                                    -1,
+                                    nullptr);
+  gtk_style_context_add_provider_for_screen(
+      screen, GTK_STYLE_PROVIDER(provider),
+      GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+  
+  // --- VAXP BLUR CONFIGURATION END ---
 
   fl_register_plugins(FL_PLUGIN_REGISTRY(view));
 
@@ -83,19 +115,11 @@ static gboolean my_application_local_command_line(GApplication* application, gch
 
 // Implements GApplication::startup.
 static void my_application_startup(GApplication* application) {
-  //MyApplication* self = MY_APPLICATION(object);
-
-  // Perform any actions required at application startup.
-
   G_APPLICATION_CLASS(my_application_parent_class)->startup(application);
 }
 
 // Implements GApplication::shutdown.
 static void my_application_shutdown(GApplication* application) {
-  //MyApplication* self = MY_APPLICATION(object);
-
-  // Perform any actions required at application shutdown.
-
   G_APPLICATION_CLASS(my_application_parent_class)->shutdown(application);
 }
 
@@ -117,12 +141,7 @@ static void my_application_class_init(MyApplicationClass* klass) {
 static void my_application_init(MyApplication* self) {}
 
 MyApplication* my_application_new() {
-  // Set the program name to the application ID, which helps various systems
-  // like GTK and desktop environments map this running application to its
-  // corresponding .desktop file. This ensures better integration by allowing
-  // the application to be recognized beyond its binary name.
   g_set_prgname(APPLICATION_ID);
-
   return MY_APPLICATION(g_object_new(my_application_get_type(),
                                      "application-id", APPLICATION_ID,
                                      "flags", G_APPLICATION_NON_UNIQUE,

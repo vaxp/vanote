@@ -12,6 +12,7 @@ class TaskDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(176, 0, 0, 0),
       appBar: AppBar(
         title: const Text('Task Details'),
         actions: [
@@ -26,9 +27,11 @@ class TaskDetailScreen extends StatelessWidget {
         ],
       ),
       body: ListView(
+
         padding: const EdgeInsets.all(16),
         children: [
           Card(
+            color: const Color.fromARGB(176, 0, 0, 0),
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -140,7 +143,7 @@ class TaskDetailScreen extends StatelessWidget {
           ),
         ],
       ),
-      backgroundColor: color.withOpacity(0.1),
+      backgroundColor: const Color.fromARGB(176, 0, 0, 0), 
     );
   }
 
@@ -148,6 +151,7 @@ class TaskDetailScreen extends StatelessWidget {
     return Consumer<TaskProvider>(
       builder: (context, taskProvider, child) {
         return Column(
+          
           children: [
             if (task.status != TaskStatus.completed)
               ElevatedButton.icon(
@@ -158,6 +162,7 @@ class TaskDetailScreen extends StatelessWidget {
                 icon: const Icon(Icons.check_circle),
                 label: const Text('Mark as Completed'),
                 style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(176, 0, 0, 0),
                   minimumSize: const Size(double.infinity, 48),
                 ),
               ),

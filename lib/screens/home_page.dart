@@ -20,28 +20,18 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+      backgroundColor: const Color.fromARGB(176, 0, 0, 0),
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              const Color.fromARGB(255, 0, 0, 0).withOpacity(0.95),
-              const Color.fromARGB(255, 0, 0, 0).withOpacity(0.95),
-
-            ],
-          ),
-        ),
+        decoration: BoxDecoration(),
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
           child: Row(
             children: [
               _buildSidebar(context),
               Expanded(
                 child: ClipRRect(
                   child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                    filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.02),
@@ -152,7 +142,7 @@ class _HomePageState extends State<HomePage> {
 
     return ClipRRect(
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
         child: Container(
           width: 280,
           decoration: BoxDecoration(
@@ -216,7 +206,7 @@ class _HomePageState extends State<HomePage> {
 
     return ClipRRect(
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
 
         child: Container(
           height: 60,

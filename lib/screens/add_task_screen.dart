@@ -106,7 +106,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
             ElevatedButton(
               onPressed: _saveTask,
               style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
+                padding: const EdgeInsets.symmetric(vertical: 16),backgroundColor: const Color.fromARGB(174, 31, 31, 31), 
               ),
               child: Text(
                 widget.task == null ? 'Add Task' : 'Save Changes',
