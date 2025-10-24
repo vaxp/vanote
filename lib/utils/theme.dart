@@ -8,7 +8,9 @@ class AppTheme {
     colorScheme: ColorScheme.dark(
       primary: const Color.fromARGB(255, 0, 225, 255), // Bright cyan
       secondary: const Color.fromARGB(255, 0, 255, 195), // Bright teal
+      // ignore: deprecated_member_use
       surface: Colors.white.withOpacity(0.08),
+      // ignore: deprecated_member_use
       background:const Color.fromARGB(176, 0, 0, 0), // Deep dark background
       error: const Color(0xFFFF5252),
       tertiary: const Color(0xFF4CAF50), // Neon green for accents
@@ -24,11 +26,13 @@ class AppTheme {
       ),
     ),
     cardTheme: CardTheme(
+      // ignore: deprecated_member_use
       color: Colors.white.withOpacity(0.07),
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(
+          // ignore: deprecated_member_use
           color: Colors.white.withOpacity(0.12),
           width: 1,
         ),

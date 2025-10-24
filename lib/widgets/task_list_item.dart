@@ -31,24 +31,31 @@ class _TaskListItemState extends State<TaskListItem> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(24),
           color: _isHovered
+              // ignore: deprecated_member_use
               ? Theme.of(context).colorScheme.surface.withOpacity(0.15)
+              // ignore: deprecated_member_use
               : Theme.of(context).colorScheme.surface.withOpacity(0.08),
           border: Border.all(
             color: _isHovered
+                // ignore: deprecated_member_use
                 ? Theme.of(context).colorScheme.primary.withOpacity(0.3)
+                // ignore: deprecated_member_use
                 : Colors.white.withOpacity(0.06),
             width: 1,
           ),
           boxShadow: [
             BoxShadow(
               color: _isHovered
+                  // ignore: deprecated_member_use
                   ? Theme.of(context).colorScheme.primary.withOpacity(0.2)
+                  // ignore: deprecated_member_use
                   : Colors.black.withOpacity(0.3),
               blurRadius: 20,
               spreadRadius: _isHovered ? 4 : -2,
             ),
             if (_isHovered)
               BoxShadow(
+                // ignore: deprecated_member_use
                 color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
                 blurRadius: 30,
                 spreadRadius: 10,
@@ -100,14 +107,17 @@ class _TaskListItemState extends State<TaskListItem> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
+                      // ignore: deprecated_member_use
                       color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
+                        // ignore: deprecated_member_use
                         color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
                         width: 1,
                       ),
                       boxShadow: [
                         BoxShadow(
+                          // ignore: deprecated_member_use
                           color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
                           blurRadius: 8,
                           spreadRadius: 0,
@@ -126,12 +136,14 @@ class _TaskListItemState extends State<TaskListItem> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
+                      // ignore: deprecated_member_use
                       color: Colors.white.withOpacity(0.05),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
                       _getFormattedDate(),
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        // ignore: deprecated_member_use
                         color: Colors.white.withOpacity(0.7),
                       ),
                     ),
@@ -152,14 +164,17 @@ class _TaskListItemState extends State<TaskListItem> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
+        // ignore: deprecated_member_use
         color: color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
+          // ignore: deprecated_member_use
           color: color.withOpacity(0.2),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
+            // ignore: deprecated_member_use
             color: color.withOpacity(0.1),
             blurRadius: 8,
             spreadRadius: 0,

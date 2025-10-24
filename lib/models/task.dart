@@ -38,6 +38,7 @@ class Task extends HiveObject {
     this.status = TaskStatus.notStarted,
     DateTime? createdAt,
   })  : id = id ?? const Uuid().v4(),
+        // ignore: unnecessary_this
         this.createdAt = createdAt ?? DateTime.now();
 
   Map<String, dynamic> toJson() {

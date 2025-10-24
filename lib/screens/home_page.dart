@@ -61,6 +61,7 @@ class _HomePageState extends State<HomePage> {
                                     size: 64,
                                     color: Theme.of(
                                       context,
+                                    // ignore: deprecated_member_use
                                     ).colorScheme.primary.withOpacity(0.5),
                                   ),
                                   const SizedBox(height: 16),
@@ -71,6 +72,7 @@ class _HomePageState extends State<HomePage> {
                                     ).textTheme.titleLarge?.copyWith(
                                       color: Theme.of(
                                         context,
+                                      // ignore: deprecated_member_use
                                       ).colorScheme.onSurface.withOpacity(0.7),
                                     ),
                                   ),
@@ -82,6 +84,7 @@ class _HomePageState extends State<HomePage> {
                                     ).textTheme.bodyMedium?.copyWith(
                                       color: Theme.of(
                                         context,
+                                      // ignore: deprecated_member_use
                                       ).colorScheme.onSurface.withOpacity(0.5),
                                     ),
                                   ),
@@ -193,6 +196,7 @@ class _HomePageState extends State<HomePage> {
         decoration: BoxDecoration(
           //theme.colorScheme.surface,
           border: Border(
+            // ignore: deprecated_member_use
             bottom: BorderSide(color: Colors.white.withOpacity(0.06), width: 1),
           ),
         ),
@@ -241,6 +245,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 border: Border(
                   top: BorderSide(
+                    // ignore: deprecated_member_use
                     color: Colors.white.withOpacity(0.06),
                     width: 1,
                   ),
@@ -356,15 +361,19 @@ class _CategoryListItemState extends State<_CategoryListItem> {
           borderRadius: BorderRadius.circular(12),
           color:
               widget.isSelected
+                  // ignore: deprecated_member_use
                   ? theme.colorScheme.primary.withOpacity(0.15)
                   : _isHovered
+                  // ignore: deprecated_member_use
                   ? Colors.white.withOpacity(0.05)
                   : Colors.transparent,
           border: Border.all(
             color:
                 widget.isSelected
+                    // ignore: deprecated_member_use
                     ? theme.colorScheme.primary.withOpacity(0.3)
                     : _isHovered
+                    // ignore: deprecated_member_use
                     ? Colors.white.withOpacity(0.1)
                     : Colors.transparent,
             width: 1,
@@ -375,7 +384,9 @@ class _CategoryListItemState extends State<_CategoryListItem> {
                     BoxShadow(
                       color:
                           widget.isSelected
+                              // ignore: deprecated_member_use
                               ? theme.colorScheme.primary.withOpacity(0.2)
+                              // ignore: deprecated_member_use
                               : Colors.white.withOpacity(0.03),
                       blurRadius: 8,
                       spreadRadius: 0,
@@ -392,6 +403,7 @@ class _CategoryListItemState extends State<_CategoryListItem> {
               color:
                   widget.isSelected || _isHovered
                       ? theme.colorScheme.primary
+                      // ignore: deprecated_member_use
                       : theme.colorScheme.onSurface.withOpacity(0.7),
             ),
           ),
