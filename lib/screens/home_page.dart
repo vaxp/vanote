@@ -20,7 +20,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(176, 0, 0, 0),
+      backgroundColor: const Color.fromARGB(97, 0, 0, 0),
       body: Container(
         decoration: BoxDecoration(),
 
