@@ -75,6 +75,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
             Consumer<TaskProvider>(
               builder: (context, taskProvider, child) {
                 return DropdownButtonFormField<String>(
+                  dropdownColor: const Color.fromARGB(216, 22, 22, 22),
                   value: _selectedCategory,
                   decoration: const InputDecoration(
                     labelText: 'Category',
