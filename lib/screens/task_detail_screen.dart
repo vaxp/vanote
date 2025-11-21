@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vanote/venom_layout.dart';
 import '../models/task.dart';
 import '../providers/task_provider.dart';
-import 'add_task_screen.dart';
 
 class TaskDetailScreen extends StatelessWidget {
   final Task task;
@@ -11,21 +11,9 @@ class TaskDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color.fromARGB(176, 0, 0, 0),
-      appBar: AppBar(
-        title: const Text('Task Details'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: () => _editTask(context),
-          ),
-          IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () => _deleteTask(context),
-          ),
-        ],
-      ),
+    return VenomScaffold(
+      title: "TaskDetail",
+      showBackButton: true,
       body: ListView(
 
         padding: const EdgeInsets.all(16),
@@ -184,43 +172,6 @@ class TaskDetailScreen extends StatelessWidget {
           ],
         );
       },
-    );
-  }
-
-  void _editTask(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => AddTaskScreen(task: task),
-      ),
-    );
-  }
-
-  void _deleteTask(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Task'),
-        content: const Text('Are you sure you want to delete this task?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              Provider.of<TaskProvider>(context, listen: false)
-                  .deleteTask(task.id);
-              Navigator.pop(context); // Close dialog
-              Navigator.pop(context); // Return to home
-            },
-            child: const Text(
-              'Delete',
-              style: TextStyle(color: Colors.red),
-            ),
-          ),
-        ],
-      ),
     );
   }
 

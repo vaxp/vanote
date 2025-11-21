@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 // import 'dart:ui';
 import 'package:provider/provider.dart';
+import 'package:vanote/venom_layout.dart';
 import '../models/task.dart';
 import '../providers/task_provider.dart';
 import 'add_task_screen.dart';
@@ -19,8 +20,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color.fromARGB(97, 0, 0, 0),
+    return VenomScaffold(
+      title: "VaNote",
+      showAddButton: true,
       body: Container(
         decoration: BoxDecoration(),
 
@@ -28,19 +30,9 @@ class _HomePageState extends State<HomePage> {
           children: [
             _buildSidebar(context),
             Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(176, 0, 0, 0),
-                  border: Border(
-                    left: BorderSide(
-                      color: const Color.fromARGB(176, 0, 0, 0),
-                      width: 1,
-                    ),
-                  ),
-                ),
+             
                 child: Column(
                   children: [
-                    _buildAppBar(context),
                     Expanded(
                       child: Consumer<TaskProvider>(
                         builder: (context, taskProvider, child) {
@@ -119,48 +111,28 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-            ),
           ],
         ),
       ),
+      selectedCategory: _selectedCategory,
     );
   }
 
   Widget _buildSidebar(BuildContext context) {
     final taskProvider = Provider.of<TaskProvider>(context);
     final categories = ['All', ...taskProvider.categories];
-    final theme = Theme.of(context);
 
     return ClipRRect(
       child: Container(
         width: 280,
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(176, 0, 0, 0),
-          border: Border(
-            right: BorderSide(color: const Color.fromARGB(176, 0, 0, 0), width: 1),
-          ),
-        ),
+        // decoration: BoxDecoration(
+        //   color: const Color.fromARGB(176, 0, 0, 0),
+        //   border: Border(
+        //     right: BorderSide(color: const Color.fromARGB(176, 0, 0, 0), width: 1),
+        //   ),
+        // ),
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  Text(
-                    'Tasks',
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const Spacer(),
-                  IconButton(
-                    icon: const Icon(Icons.add),
-                    onPressed: () => _addNewTask(context),
-                    tooltip: 'Add Task',
-                  ),
-                ],
-              ),
-            ),
             Expanded(
               child: ListView.builder(
                 itemCount: categories.length,
@@ -186,41 +158,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildAppBar(BuildContext context) {
-    final theme = Theme.of(context);
 
-    return ClipRRect(
-      child: Container(
-        height: 60,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        decoration: BoxDecoration(
-          //theme.colorScheme.surface,
-          border: Border(
-            // ignore: deprecated_member_use
-            bottom: BorderSide(color: Colors.white.withOpacity(0.06), width: 1),
-          ),
-        ),
-        child: Row(
-          children: [
-            Text(
-              _selectedCategory,
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const Spacer(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _addNewTask(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const AddTaskScreen()),
-    );
-  }
 
   void _openTaskDetails(BuildContext context, Task task) {
     Navigator.push(

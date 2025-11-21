@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vanote/venom_layout.dart';
 import '../models/task.dart';
 import '../providers/task_provider.dart';
 
@@ -35,10 +36,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.task == null ? 'Add Task' : 'Edit Task'),
-      ),
+    return VenomScaffold(
+      title: widget.task == null ? 'AddTask' : 'AddTask',
+      showBackButton: true,
       body: Form(
         key: _formKey,
         child: ListView(
