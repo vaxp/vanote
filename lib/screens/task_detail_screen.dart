@@ -1,25 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:vanote/venom_layout.dart';
 import '../models/task.dart';
 import '../providers/task_provider.dart';
 
 class TaskDetailScreen extends StatelessWidget {
   final Task task;
+  final VoidCallback? onBack;
+  final Function(Task)? onEdit;
 
-  const TaskDetailScreen({super.key, required this.task});
+  const TaskDetailScreen({
+    super.key,
+    required this.task,
+    this.onBack,
+    this.onEdit,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return VenomScaffold(
-      title: "TaskDetail",
-      showBackButton: true,
+    return Scaffold(
+     backgroundColor: const Color.fromARGB(0, 0, 0, 0),
       body: ListView(
 
         padding: const EdgeInsets.all(16),
         children: [
           Card(
-            color: const Color.fromARGB(176, 0, 0, 0),
+            color: const Color.fromARGB(117, 0, 0, 0),
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -145,7 +150,7 @@ class TaskDetailScreen extends StatelessWidget {
               ElevatedButton.icon(
                 onPressed: () {
                   taskProvider.updateTaskStatus(task.id, TaskStatus.completed);
-                  Navigator.pop(context);
+                  if (onBack != null) onBack!();
                 },
                 icon: const Icon(Icons.check_circle),
                 label: const Text('Mark as Completed'),
@@ -160,7 +165,7 @@ class TaskDetailScreen extends StatelessWidget {
                 child: ElevatedButton.icon(
                   onPressed: () {
                     taskProvider.updateTaskStatus(task.id, TaskStatus.inProgress);
-                    Navigator.pop(context);
+                    if (onBack != null) onBack!();
                   },
                   icon: const Icon(Icons.pending),
                   label: const Text('Mark as In Progress'),

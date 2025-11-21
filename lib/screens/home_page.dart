@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 // import 'dart:ui';
 import 'package:provider/provider.dart';
-import 'package:vanote/venom_layout.dart';
+import 'package:vanote/providers/page_manager.dart';
 import '../models/task.dart';
 import '../providers/task_provider.dart';
-import 'add_task_screen.dart';
-import 'task_detail_screen.dart';
 import '../widgets/task_list_item.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final Function(PageType, {dynamic data})? onNavigate;
+
+  const HomePage({super.key, this.onNavigate});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -20,9 +20,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return VenomScaffold(
-      title: "VaNote",
-      showAddButton: true,
+    return Scaffold(
+     backgroundColor: const Color.fromARGB(0, 0, 0, 0),
+
       body: Container(
         decoration: BoxDecoration(),
 
@@ -114,7 +114,7 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      selectedCategory: _selectedCategory,
+
     );
   }
 
@@ -161,10 +161,9 @@ class _HomePageState extends State<HomePage> {
 
 
   void _openTaskDetails(BuildContext context, Task task) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => TaskDetailScreen(task: task)),
-    );
+    if (widget.onNavigate != null) {
+      widget.onNavigate!(PageType.taskDetail, data: task);
+    }
   }
 
   void _showTaskOptions(BuildContext context, Task task) {
@@ -222,12 +221,9 @@ class _HomePageState extends State<HomePage> {
                     title: 'Edit Task',
                     onTap: () {
                       Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AddTaskScreen(task: task),
-                        ),
-                      );
+                      if (widget.onNavigate != null) {
+                        widget.onNavigate!(PageType.addTask, data: task);
+                      }
                     },
                   ),
                   _buildOptionTile(

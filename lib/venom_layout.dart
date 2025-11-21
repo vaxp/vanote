@@ -1,7 +1,8 @@
 import 'dart:ui'; // مهم للـ ImageFilter
 import 'package:flutter/material.dart';
-import 'package:vanote/screens/add_task_screen.dart';
+import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
+import 'providers/page_manager.dart';
 
 // 1. هذا هو الـ Layout الرئيسي الذي ستستخدمه في تطبيقك
 class VenomScaffold extends StatefulWidget {
@@ -30,7 +31,7 @@ class _VenomScaffoldState extends State<VenomScaffold> {
   bool _isCinematicBlurActive = false;
 
   void _setBlur(bool active) {
-    if (_isCinematicBlurActive != active) {
+    if (_isCinematicBlurActive != active && mounted) {
       setState(() {
         _isCinematicBlurActive = active;
       });
@@ -40,33 +41,24 @@ class _VenomScaffoldState extends State<VenomScaffold> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:  const Color.fromARGB(100, 0, 0, 0),
+      backgroundColor: const Color.fromARGB(100, 0, 0, 0),
       body: Stack(
         children: [
           // --- الطبقة 1: محتوى التطبيق ---
-          // نستخدم TweenAnimationBuilder لتحريك قيمة الـ Blur بنعومة
-          TweenAnimationBuilder<double>(
-            tween: Tween<double>(
-              begin: 0.0,
-              end: _isCinematicBlurActive
-                  ? 10.0
-                  : 0.0, // قوة البلور (10 قوية وجميلة)
-            ),
-            duration: const Duration(milliseconds: 300), // سرعة الأنيميشن
-            curve: Curves.easeOutCubic, // منحنى حركة ناعم
-            builder: (context, blurValue, child) {
-              return ImageFiltered(
-                imageFilter: ImageFilter.blur(
-                  sigmaX: blurValue,
-                  sigmaY: blurValue,
-                ),
-                child: child,
-              );
-            },
-            child: Container(
-              margin: const EdgeInsets.only(top: 40), // نترك مساحة للـ Appbar
-              child: widget.body,
-            ),
+          // Use instant blur toggle (no animation) for responsiveness
+          RepaintBoundary(
+            child: _isCinematicBlurActive
+                ? ImageFiltered(
+                    imageFilter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                    child: Container(
+                      margin: const EdgeInsets.only(top: 40),
+                      child: widget.body,
+                    ),
+                  )
+                : Container(
+                    margin: const EdgeInsets.only(top: 40),
+                    child: widget.body,
+                  ),
           ),
 
           // --- الطبقة 2: شريط العنوان (فوق الكل) ---
@@ -128,7 +120,10 @@ class VenomAppbar extends StatelessWidget {
               children: [
                 if (showBackButton)
                 GestureDetector(
-                  onTap: () => Navigator.pop(context),
+                  onTap: () {
+                    final pageManager = Provider.of<PageManager>(context, listen: false);
+                    pageManager.goBack();
+                  },
                   child: const Icon(Icons.arrow_back, color: Colors.white),
                 ),
                 Padding(
@@ -261,9 +256,7 @@ class _VenomWindowButtonState extends State<VenomWindowButton> {
 }
 
 void _addNewTask(BuildContext context) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => const AddTaskScreen()),
-  );
+  final pageManager = Provider.of<PageManager>(context, listen: false);
+  pageManager.goToAddTask();
 }
    

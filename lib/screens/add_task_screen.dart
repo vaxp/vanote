@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:vanote/venom_layout.dart';
 import '../models/task.dart';
 import '../providers/task_provider.dart';
 
 class AddTaskScreen extends StatefulWidget {
   final Task? task;
+  final VoidCallback? onBack;
 
-  const AddTaskScreen({super.key, this.task});
+  const AddTaskScreen({super.key, this.task, this.onBack});
 
   @override
   State<AddTaskScreen> createState() => _AddTaskScreenState();
@@ -36,9 +36,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return VenomScaffold(
-      title: widget.task == null ? 'AddTask' : 'AddTask',
-      showBackButton: true,
+    return Scaffold(
+           backgroundColor: const Color.fromARGB(0, 0, 0, 0),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -139,7 +138,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         taskProvider.updateTask(updatedTask);
       }
 
-      Navigator.pop(context);
+      if (widget.onBack != null) {
+        widget.onBack!();
+      }
     }
   }
 }
