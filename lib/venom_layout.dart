@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 import 'providers/page_manager.dart';
+import 'dart:math' as math;
 
 // 1. هذا هو الـ Layout الرئيسي الذي ستستخدمه في تطبيقك
 class VenomScaffold extends StatefulWidget {
@@ -23,7 +24,6 @@ class VenomScaffold extends StatefulWidget {
     this.showAddButton = false,
     this.showDiagramButton = false,
     this.actions,
-
   }) : super(key: key);
 
   @override
@@ -51,18 +51,19 @@ class _VenomScaffoldState extends State<VenomScaffold> {
           // --- الطبقة 1: محتوى التطبيق ---
           // Use instant blur toggle (no animation) for responsiveness
           RepaintBoundary(
-            child: _isCinematicBlurActive
-                ? ImageFiltered(
-                    imageFilter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-                    child: Container(
+            child:
+                _isCinematicBlurActive
+                    ? ImageFiltered(
+                      imageFilter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                      child: Container(
+                        margin: const EdgeInsets.only(top: 40),
+                        child: widget.body,
+                      ),
+                    )
+                    : Container(
                       margin: const EdgeInsets.only(top: 40),
                       child: widget.body,
                     ),
-                  )
-                : Container(
-                    margin: const EdgeInsets.only(top: 40),
-                    child: widget.body,
-                  ),
           ),
 
           // --- الطبقة 2: شريط العنوان (فوق الكل) ---
@@ -129,13 +130,16 @@ class VenomAppbar extends StatelessWidget {
             child: Row(
               children: [
                 if (showBackButton)
-                GestureDetector(
-                  onTap: () {
-                    final pageManager = Provider.of<PageManager>(context, listen: false);
-                    pageManager.goBack();
-                  },
-                  child: const Icon(Icons.arrow_back, color: Colors.white),
-                ),
+                  GestureDetector(
+                    onTap: () {
+                      final pageManager = Provider.of<PageManager>(
+                        context,
+                        listen: false,
+                      );
+                      pageManager.goBack();
+                    },
+                    child: const Icon(Icons.arrow_back, color: Colors.white),
+                  ),
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0),
                   child: Text(
@@ -151,20 +155,25 @@ class VenomAppbar extends StatelessWidget {
                 const SizedBox(width: 20),
                 // Page-specific actions (e.g., search, undo, redo)
                 if (actions != null) ...actions!,
-                const SizedBox(width: 8),
+                const SizedBox(width: 79),
                 if (showAddButton)
-                  GestureDetector(
+                  NeonActionBtn(
                     onTap: () => _addNewTask(context),
-                    child: const Icon(Icons.add),
+                    child: const Icon(
+                      Icons.add,
+                      color: Colors.white,
+                    ), // تأكد أن الأيقونة بيضاء لتبرز
                   ),
-                const SizedBox(width: 8),
                 if (showDiagramButton)
-                  GestureDetector(
+                  NeonActionBtn(
                     onTap: () => _openDiagramEditor(context),
-                    child: const Icon(Icons.architecture),
+                    child: const Icon(
+                      Icons.architecture,
+                      color: Colors.white,
+                    ), 
                   ),
 
-             const Spacer(),
+                const Spacer(),
                 // مجموعة الأزرار
                 // نستخدم MouseRegion واحد كبير حول الأزرار الثلاثة
                 // لضمان استمرار البلور عند التنقل بين زر وآخر
@@ -247,15 +256,16 @@ class _VenomWindowButtonState extends State<VenomWindowButton> {
           decoration: BoxDecoration(
             color: widget.color,
             shape: BoxShape.circle,
-            boxShadow: _isHovered
-                ? [
-                    BoxShadow(
-                      color: widget.color.withOpacity(0.8),
-                      blurRadius: 10, // زيادة التوهج قليلاً
-                      spreadRadius: 2,
-                    ),
-                  ]
-                : [],
+            boxShadow:
+                _isHovered
+                    ? [
+                      BoxShadow(
+                        color: widget.color.withOpacity(0.8),
+                        blurRadius: 10, // زيادة التوهج قليلاً
+                        spreadRadius: 2,
+                      ),
+                    ]
+                    : [],
           ),
           child: Center(
             child: AnimatedOpacity(
@@ -283,4 +293,98 @@ void _openDiagramEditor(BuildContext context) {
   final pageManager = Provider.of<PageManager>(context, listen: false);
   pageManager.goToDiagramEditor();
 }
-   
+
+class NeonActionBtn extends StatefulWidget {
+  final VoidCallback onTap;
+  final Widget child;
+
+  const NeonActionBtn({super.key, required this.onTap, required this.child});
+
+  @override
+  State<NeonActionBtn> createState() => _NeonActionBtnState();
+}
+
+class _NeonActionBtnState extends State<NeonActionBtn>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    // تحكم في سرعة الدوران من هنا (ثانيتين للدورة الكاملة)
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat(); // تكرار لا نهائي
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: widget.onTap,
+      child: Container(
+        width: 50, // حجم الزر
+        height: 50,
+        color: Colors.transparent, // ضروري ليعمل اللمس
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            // طبقة الحلقة النيون الدوارة
+            RotationTransition(
+              turns: _controller,
+              child: CustomPaint(
+                size: const Size(50, 50),
+                painter: _NeonRingPainter(),
+              ),
+            ),
+            // الأيقونة في المنتصف
+            widget.child,
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _NeonRingPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = (size.width / 3) - 3; // نصف القطر
+
+    // إعداد فرشاة النيون
+    final Paint paint =
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth =
+              3.0 // سماكة الحلقة
+          ..strokeCap = StrokeCap.round
+          // تأثير التوهج (Neon Glow)
+          ..maskFilter = const MaskFilter.blur(BlurStyle.solid, 4.0);
+
+    // التدرج اللوني (Venom Colors)
+    // التدرج يبدأ شفافاً ثم سيان ثم بنفسجي ليعطي تأثير الذيل
+    final Rect rect = Rect.fromCircle(center: center, radius: radius);
+    paint.shader = const SweepGradient(
+      colors: [
+        Colors.transparent,
+        Colors.cyanAccent,
+        Colors.purpleAccent,
+        Colors.cyanAccent, // تكرار اللون لغلق الحلقة بجمالية
+      ],
+      stops: [0.0, 0.5, 0.75, 1.0],
+    ).createShader(rect);
+
+    // رسم الحلقة
+    canvas.drawArc(rect, 0, math.pi * 2, false, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
