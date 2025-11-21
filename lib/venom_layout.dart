@@ -130,7 +130,7 @@ class VenomAppbar extends StatelessWidget {
             child: Row(
               children: [
                 if (showBackButton)
-                  GestureDetector(
+                  NeonActionBtn(
                     onTap: () {
                       final pageManager = Provider.of<PageManager>(
                         context,
