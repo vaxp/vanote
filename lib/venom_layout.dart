@@ -11,6 +11,8 @@ class VenomScaffold extends StatefulWidget {
   final String? selectedCategory;
   final bool showBackButton;
   final bool showAddButton;
+  final bool showDiagramButton;
+  final List<Widget>? actions;
 
   const VenomScaffold({
     Key? key,
@@ -19,6 +21,8 @@ class VenomScaffold extends StatefulWidget {
     this.selectedCategory,
     this.showBackButton = false,
     this.showAddButton = false,
+    this.showDiagramButton = false,
+    this.actions,
 
   }) : super(key: key);
 
@@ -71,6 +75,8 @@ class _VenomScaffoldState extends State<VenomScaffold> {
               selectedCategory: widget.selectedCategory,
               showBackButton: widget.showBackButton,
               showAddButton: widget.showAddButton,
+              showDiagramButton: widget.showDiagramButton,
+              actions: widget.actions,
               // تمرير دالة للتحكم في البلور عند لمس الأزرار
               onHoverEnter: () => _setBlur(true),
               onHoverExit: () => _setBlur(false),
@@ -88,8 +94,10 @@ class VenomAppbar extends StatelessWidget {
   final String? selectedCategory;
   final bool showBackButton;
   final bool showAddButton;
+  final bool showDiagramButton;
   final VoidCallback onHoverEnter;
   final VoidCallback onHoverExit;
+  final List<Widget>? actions;
 
   const VenomAppbar({
     Key? key,
@@ -97,6 +105,8 @@ class VenomAppbar extends StatelessWidget {
     this.selectedCategory,
     this.showBackButton = false,
     this.showAddButton = false,
+    this.showDiagramButton = false,
+    this.actions,
     required this.onHoverEnter,
     required this.onHoverExit,
   }) : super(key: key);
@@ -138,11 +148,20 @@ class VenomAppbar extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: 155),
+                const SizedBox(width: 20),
+                // Page-specific actions (e.g., search, undo, redo)
+                if (actions != null) ...actions!,
+                const SizedBox(width: 8),
                 if (showAddButton)
                   GestureDetector(
                     onTap: () => _addNewTask(context),
                     child: const Icon(Icons.add),
+                  ),
+                const SizedBox(width: 8),
+                if (showDiagramButton)
+                  GestureDetector(
+                    onTap: () => _openDiagramEditor(context),
+                    child: const Icon(Icons.architecture),
                   ),
 
              const Spacer(),
@@ -258,5 +277,10 @@ class _VenomWindowButtonState extends State<VenomWindowButton> {
 void _addNewTask(BuildContext context) {
   final pageManager = Provider.of<PageManager>(context, listen: false);
   pageManager.goToAddTask();
+}
+
+void _openDiagramEditor(BuildContext context) {
+  final pageManager = Provider.of<PageManager>(context, listen: false);
+  pageManager.goToDiagramEditor();
 }
    

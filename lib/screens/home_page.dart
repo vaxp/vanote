@@ -125,12 +125,6 @@ class _HomePageState extends State<HomePage> {
     return ClipRRect(
       child: Container(
         width: 280,
-        // decoration: BoxDecoration(
-        //   color: const Color.fromARGB(176, 0, 0, 0),
-        //   border: Border(
-        //     right: BorderSide(color: const Color.fromARGB(176, 0, 0, 0), width: 1),
-        //   ),
-        // ),
         child: Column(
           children: [
             Expanded(

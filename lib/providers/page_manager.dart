@@ -4,6 +4,7 @@ enum PageType {
   home,
   taskDetail,
   addTask,
+  diagramEditor,
 }
 
 class PageManager with ChangeNotifier {
@@ -28,6 +29,12 @@ class PageManager with ChangeNotifier {
   void goToAddTask({dynamic task}) {
     _currentPage = PageType.addTask;
     _pageData = task;
+    notifyListeners();
+  }
+
+  void goToDiagramEditor({dynamic data}) {
+    _currentPage = PageType.diagramEditor;
+    _pageData = data;
     notifyListeners();
   }
 
