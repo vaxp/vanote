@@ -11,11 +11,14 @@ import 'venom_layout.dart';
 import 'panel/features/diagram/presentation/pages/diagram_editor_page.dart';
 import 'utils/theme.dart';
 import 'models/task.dart';
+import 'package:venom_config/venom_config.dart';
 
 void main() async {
-  
-      // Initialize Flutter bindings first to ensure the binary messenger is ready
+  // Initialize Flutter bindings first to ensure the binary messenger is ready
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Venom Config System
+  await VenomConfig().init();
 
   // Initialize window manager for desktop controls
   await windowManager.ensureInitialized();
@@ -33,15 +36,15 @@ void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
-  
+
   // Register adapters
   Hive.registerAdapter(TaskAdapter());
   Hive.registerAdapter(TaskStatusAdapter());
-  
+
   // Open boxes
   await Hive.openBox<Task>('tasks');
   await Hive.openBox<List<String>>('categories');
-  
+
   runApp(
     MultiProvider(
       providers: [
@@ -121,37 +124,41 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
 
-      _homePageInstance = HomePage(onNavigate: (pageType, {data}) {
-        final pageManager = Provider.of<PageManager>(context, listen: false);
-        switch (pageType) {
-          case PageType.taskDetail:
-            pageManager.goToTaskDetail(data);
-            break;
-          case PageType.addTask:
-            pageManager.goToAddTask(task: data);
-            break;
-          case PageType.diagramEditor:
-            pageManager.goToDiagramEditor(data: data);
-            break;
-          default:
-            pageManager.goToHome();
-        }
-      });
+      _homePageInstance = HomePage(
+        onNavigate: (pageType, {data}) {
+          final pageManager = Provider.of<PageManager>(context, listen: false);
+          switch (pageType) {
+            case PageType.taskDetail:
+              pageManager.goToTaskDetail(data);
+              break;
+            case PageType.addTask:
+              pageManager.goToAddTask(task: data);
+              break;
+            case PageType.diagramEditor:
+              pageManager.goToDiagramEditor(data: data);
+              break;
+            default:
+              pageManager.goToHome();
+          }
+        },
+      );
 
       _addTaskPageInstance = AddTaskScreen(
         task: null,
         onBack: () => Provider.of<PageManager>(context, listen: false).goBack(),
       );
 
-      _diagramEditorPageInstance = DiagramEditorPage(onActionsAvailable: (actions) {
-        if (!mounted) return;
-        WidgetsBinding.instance.addPostFrameCallback((_) {
+      _diagramEditorPageInstance = DiagramEditorPage(
+        onActionsAvailable: (actions) {
           if (!mounted) return;
-          setState(() {
-            _diagramActions = actions;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted) return;
+            setState(() {
+              _diagramActions = actions;
+            });
           });
-        });
-      });
+        },
+      );
 
       // Force rebuild so preloaded instances are used
       setState(() {});
@@ -176,22 +183,28 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
   Widget _buildPageContent() {
     switch (widget.currentPage) {
       case PageType.home:
-        return _homePageInstance ?? HomePage(onNavigate: (pageType, {data}) {
-          final pageManager = Provider.of<PageManager>(context, listen: false);
-          switch (pageType) {
-            case PageType.taskDetail:
-              pageManager.goToTaskDetail(data);
-              break;
-            case PageType.addTask:
-              pageManager.goToAddTask(task: data);
-              break;
-            case PageType.diagramEditor:
-              pageManager.goToDiagramEditor(data: data);
-              break;
-            default:
-              pageManager.goToHome();
-          }
-        });
+        return _homePageInstance ??
+            HomePage(
+              onNavigate: (pageType, {data}) {
+                final pageManager = Provider.of<PageManager>(
+                  context,
+                  listen: false,
+                );
+                switch (pageType) {
+                  case PageType.taskDetail:
+                    pageManager.goToTaskDetail(data);
+                    break;
+                  case PageType.addTask:
+                    pageManager.goToAddTask(task: data);
+                    break;
+                  case PageType.diagramEditor:
+                    pageManager.goToDiagramEditor(data: data);
+                    break;
+                  default:
+                    pageManager.goToHome();
+                }
+              },
+            );
       case PageType.diagramEditor:
         return _diagramEditorPageInstance ?? DiagramEditorPage();
       case PageType.taskDetail:
@@ -201,18 +214,22 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
             Provider.of<PageManager>(context, listen: false).goBack();
           },
           onEdit: (task) {
-            Provider.of<PageManager>(context, listen: false).goToAddTask(task: task);
+            Provider.of<PageManager>(
+              context,
+              listen: false,
+            ).goToAddTask(task: task);
           },
         );
       case PageType.addTask:
         // Use preloaded instance for new task, otherwise create instance for editing
         if (widget.pageData == null) {
-          return _addTaskPageInstance ?? AddTaskScreen(
-            task: null,
-            onBack: () {
-              Provider.of<PageManager>(context, listen: false).goBack();
-            },
-          );
+          return _addTaskPageInstance ??
+              AddTaskScreen(
+                task: null,
+                onBack: () {
+                  Provider.of<PageManager>(context, listen: false).goBack();
+                },
+              );
         }
 
         return AddTaskScreen(
@@ -263,11 +280,9 @@ class _MainLayoutState extends State<MainLayout> with TickerProviderStateMixin {
       showBackButton: showBackButton,
       showAddButton: showAddButton,
       showDiagramButton: showDiagramButton,
-      actions: widget.currentPage == PageType.diagramEditor ? _diagramActions : null,
-      body: FadeTransition(
-        opacity: _fadeAnimation,
-        child: _buildPageContent(),
-      ),
+      actions:
+          widget.currentPage == PageType.diagramEditor ? _diagramActions : null,
+      body: FadeTransition(opacity: _fadeAnimation, child: _buildPageContent()),
     );
   }
 }

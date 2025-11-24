@@ -46,6 +46,8 @@ dependencies:
   screenshot: ^3.0.0
   shared_preferences: ^2.5.3
   pdf: ^3.11.3
+  venom_config:
+    path: ../venom_config
 
 dev_dependencies:
   flutter_test:

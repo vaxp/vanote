@@ -21,7 +21,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     backgroundColor: const Color.fromARGB(0, 0, 0, 0),
+      backgroundColor: const Color.fromARGB(0, 0, 0, 0),
 
       body: Container(
         decoration: BoxDecoration(),
@@ -30,91 +30,87 @@ class _HomePageState extends State<HomePage> {
           children: [
             _buildSidebar(context),
             Expanded(
-             
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: Consumer<TaskProvider>(
-                        builder: (context, taskProvider, child) {
-                          final tasks =
-                              _selectedCategory == 'All'
-                                  ? taskProvider.tasks
-                                  : taskProvider.getTasksByCategory(
-                                    _selectedCategory,
-                                  );
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Consumer<TaskProvider>(
+                      builder: (context, taskProvider, child) {
+                        final tasks =
+                            _selectedCategory == 'All'
+                                ? taskProvider.tasks
+                                : taskProvider.getTasksByCategory(
+                                  _selectedCategory,
+                                );
 
-                          if (tasks.isEmpty) {
-                            return Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.task_alt,
-                                    size: 64,
-                                    color: Theme.of(
-                                      context,
+                        if (tasks.isEmpty) {
+                          return Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.task_alt,
+                                  size: 64,
+                                  color: Theme.of(
+                                    context,
                                     // ignore: deprecated_member_use
-                                    ).colorScheme.primary.withOpacity(0.5),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Text(
-                                    'No tasks yet',
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.titleLarge?.copyWith(
-                                      color: Theme.of(
-                                        context,
-                                      // ignore: deprecated_member_use
-                                      ).colorScheme.onSurface.withOpacity(0.7),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    'Click the + button to add a new task',
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.bodyMedium?.copyWith(
-                                      color: Theme.of(
-                                        context,
-                                      // ignore: deprecated_member_use
-                                      ).colorScheme.onSurface.withOpacity(0.5),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          }
-
-                          return GridView.builder(
-                            padding: const EdgeInsets.all(16),
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 3,
-                                  childAspectRatio: 1.2,
-                                  crossAxisSpacing: 10,
-                                  mainAxisSpacing: 10,
+                                  ).colorScheme.primary.withOpacity(0.5),
                                 ),
-                            itemCount: tasks.length,
-                            itemBuilder: (context, index) {
-                              final task = tasks[index];
-                              return TaskListItem(
-                                task: task,
-                                onTap: () => _openTaskDetails(context, task),
-                                onLongPress:
-                                    () => _showTaskOptions(context, task),
-                              );
-                            },
+                                const SizedBox(height: 16),
+                                Text(
+                                  'No tasks yet',
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.titleLarge?.copyWith(
+                                    color: DefaultTextStyle.of(
+                                      context,
+                                    ).style.color?.withOpacity(0.7),
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Click the + button to add a new task',
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.bodyMedium?.copyWith(
+                                    color: DefaultTextStyle.of(
+                                      context,
+                                    ).style.color?.withOpacity(0.5),
+                                  ),
+                                ),
+                              ],
+                            ),
                           );
-                        },
-                      ),
+                        }
+
+                        return GridView.builder(
+                          padding: const EdgeInsets.all(16),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                                childAspectRatio: 1.2,
+                                crossAxisSpacing: 10,
+                                mainAxisSpacing: 10,
+                              ),
+                          itemCount: tasks.length,
+                          itemBuilder: (context, index) {
+                            final task = tasks[index];
+                            return TaskListItem(
+                              task: task,
+                              onTap: () => _openTaskDetails(context, task),
+                              onLongPress:
+                                  () => _showTaskOptions(context, task),
+                            );
+                          },
+                        );
+                      },
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
+            ),
           ],
         ),
       ),
-
     );
   }
 
@@ -151,8 +147,6 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-
-
 
   void _openTaskDetails(BuildContext context, Task task) {
     if (widget.onNavigate != null) {
@@ -331,8 +325,8 @@ class _CategoryListItemState extends State<_CategoryListItem> {
               color:
                   widget.isSelected || _isHovered
                       ? theme.colorScheme.primary
-                      // ignore: deprecated_member_use
-                      : theme.colorScheme.onSurface.withOpacity(0.7),
+                      // Use inherited color (from VenomLayout) when not selected
+                      : IconTheme.of(context).color?.withOpacity(0.7),
             ),
           ),
           title: Text(
@@ -341,7 +335,8 @@ class _CategoryListItemState extends State<_CategoryListItem> {
               color:
                   widget.isSelected || _isHovered
                       ? theme.colorScheme.primary
-                      : theme.colorScheme.onSurface,
+                      // Use inherited color (from VenomLayout) when not selected
+                      : DefaultTextStyle.of(context).style.color,
               fontWeight: widget.isSelected ? FontWeight.w600 : null,
             ),
           ),

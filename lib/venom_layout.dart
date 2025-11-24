@@ -5,6 +5,8 @@ import 'package:window_manager/window_manager.dart';
 import 'providers/page_manager.dart';
 import 'dart:math' as math;
 
+import 'package:venom_config/venom_config.dart';
+
 // 1. هذا هو الـ Layout الرئيسي الذي ستستخدمه في تطبيقك
 class VenomScaffold extends StatefulWidget {
   final Widget body; // محتوى الصفحة (الإعدادات)
@@ -34,6 +36,45 @@ class _VenomScaffoldState extends State<VenomScaffold> {
   // متغير الحالة للتحكم في الضبابية
   bool _isCinematicBlurActive = false;
 
+  // Default colors
+  Color _backgroundColor = const Color.fromARGB(100, 0, 0, 0);
+  Color _textColor = Colors.white;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadConfig(VenomConfig().getAll());
+    VenomConfig().onConfigChanged.listen((config) {
+      _loadConfig(config);
+    });
+  }
+
+  void _loadConfig(Map<String, dynamic> config) {
+    if (mounted) {
+      final bgHex = config['system.background_color'] as String?;
+      final textHex = config['system.text_color'] as String?;
+
+      setState(() {
+        if (bgHex != null) _backgroundColor = _parseColor(bgHex);
+        if (textHex != null) _textColor = _parseColor(textHex);
+      });
+    }
+  }
+
+  Color _parseColor(String hex) {
+    hex = hex.replaceAll('#', '');
+    if (hex.length == 3) {
+      hex = hex.split('').map((c) => '$c$c').join();
+    }
+    if (hex.length == 6) {
+      hex = 'FF$hex';
+    }
+    if (hex.length == 8) {
+      return Color(int.parse(hex, radix: 16));
+    }
+    return const Color.fromARGB(100, 0, 0, 0); // Default fallback
+  }
+
   void _setBlur(bool active) {
     if (_isCinematicBlurActive != active && mounted) {
       setState(() {
@@ -44,8 +85,17 @@ class _VenomScaffoldState extends State<VenomScaffold> {
 
   @override
   Widget build(BuildContext context) {
+    // Wrap body in DefaultTextStyle to propagate text color centrally
+    final contentWithTheme = DefaultTextStyle.merge(
+      style: TextStyle(color: _textColor),
+      child: IconTheme(
+        data: IconThemeData(color: _textColor),
+        child: widget.body,
+      ),
+    );
+
     return Scaffold(
-      backgroundColor: const Color.fromARGB(100, 0, 0, 0),
+      backgroundColor: _backgroundColor,
       body: Stack(
         children: [
           // --- الطبقة 1: محتوى التطبيق ---
@@ -57,12 +107,12 @@ class _VenomScaffoldState extends State<VenomScaffold> {
                       imageFilter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
                       child: Container(
                         margin: const EdgeInsets.only(top: 40),
-                        child: widget.body,
+                        child: contentWithTheme,
                       ),
                     )
                     : Container(
                       margin: const EdgeInsets.only(top: 40),
-                      child: widget.body,
+                      child: contentWithTheme,
                     ),
           ),
 
@@ -78,6 +128,7 @@ class _VenomScaffoldState extends State<VenomScaffold> {
               showAddButton: widget.showAddButton,
               showDiagramButton: widget.showDiagramButton,
               actions: widget.actions,
+              textColor: _textColor, // Pass dynamic text color
               // تمرير دالة للتحكم في البلور عند لمس الأزرار
               onHoverEnter: () => _setBlur(true),
               onHoverExit: () => _setBlur(false),
@@ -99,6 +150,7 @@ class VenomAppbar extends StatelessWidget {
   final VoidCallback onHoverEnter;
   final VoidCallback onHoverExit;
   final List<Widget>? actions;
+  final Color textColor; // New property
 
   const VenomAppbar({
     Key? key,
@@ -110,6 +162,7 @@ class VenomAppbar extends StatelessWidget {
     this.actions,
     required this.onHoverEnter,
     required this.onHoverExit,
+    this.textColor = Colors.white, // Default
   }) : super(key: key);
 
   @override
@@ -138,16 +191,16 @@ class VenomAppbar extends StatelessWidget {
                       );
                       pageManager.goBack();
                     },
-                    child: const Icon(Icons.arrow_back, color: Colors.white),
+                    child: Icon(Icons.arrow_back, color: textColor),
                   ),
                 Padding(
                   padding: const EdgeInsets.only(left: 15.0),
                   child: Text(
                     title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: Colors.white,
+                      color: textColor,
                       letterSpacing: 0.5,
                     ),
                   ),
@@ -159,18 +212,15 @@ class VenomAppbar extends StatelessWidget {
                 if (showAddButton)
                   NeonActionBtn(
                     onTap: () => _addNewTask(context),
-                    child: const Icon(
+                    child: Icon(
                       Icons.add,
-                      color: Colors.white,
+                      color: textColor,
                     ), // تأكد أن الأيقونة بيضاء لتبرز
                   ),
                 if (showDiagramButton)
                   NeonActionBtn(
                     onTap: () => _openDiagramEditor(context),
-                    child: const Icon(
-                      Icons.architecture,
-                      color: Colors.white,
-                    ), 
+                    child: Icon(Icons.architecture, color: textColor),
                   ),
 
                 const Spacer(),
